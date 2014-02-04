@@ -31,11 +31,11 @@ public class AStarSearch {
 			this.path = this.parent.path + path;
 		}
 		
-		
-		public LinkedList<Node> getSuccessors(){
-			//X 3 
-			//2 1
-			
+		/**
+		 * Generates successors out of the current state limited by puzzle possibilities
+		 * @return
+		 */
+		public LinkedList<Node> getSuccessors(){			
 			int n = puzzle.length;
 			
 			//find left
@@ -85,6 +85,13 @@ public class AStarSearch {
 			return successors;
 		}
 		
+		/**
+		 * Helper method to copy a puzzle without references of String
+		 * @param newPuzzle
+		 * @param oldPuzzle
+		 * @param n
+		 * @return
+		 */
 		private String[][] copyPuzzle(String[][] newPuzzle, String[][] oldPuzzle, int n){
 			for(int i = 0; i < n; i++){
 				for(int j = 0; j< n; j++){
@@ -105,46 +112,9 @@ public class AStarSearch {
 			}
 		}
 		
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result + getOuterType().hashCode();
-			result = prime * result + ((costs == null) ? 0 : costs.hashCode());
-			result = prime * result + Arrays.hashCode(puzzle);
-			return result;
-		}
-
-	    @Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			Node other = (Node) obj;
-			if (!getOuterType().equals(other.getOuterType()))
-				return false;
-			if (costs == null) {
-				if (other.costs != null)
-					return false;
-			} else if (!costs.equals(other.costs))
-				return false;
-			if (!Arrays.deepEquals(puzzle, other.puzzle))
-				return false;
-			
-			//if(!comparePuzzle(other.puzzle))
-			//	return false;
-			
-			return true;
-		}
-
-		private AStarSearch getOuterType() {
-			return AStarSearch.this;
-		}
-		
-		
+		/**
+		 * Helper method to set coordinates of X for the current state
+		 */
 		public void findX(){
 			int n = puzzle.length;
 			for(int i = 0; i < n; i++){
@@ -165,7 +135,7 @@ public class AStarSearch {
 	
 	public AStarSearch(String input) throws IOException {
 		String inputFile = readFile(input);
-		startState = getStartState(inputFile);
+		startState = generateStateFromString(inputFile);
 		startState.path = "root:";
 		startState.findX();
 		
@@ -173,6 +143,12 @@ public class AStarSearch {
 		goalState = getGoalState();
 	}
 	
+	/**
+	 * Reads text file an generates string
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
 	private String readFile(String file) throws IOException{
 	 	BufferedReader br = new BufferedReader(new FileReader(file));
 	    try {
@@ -192,7 +168,13 @@ public class AStarSearch {
 	    }
 	}
 	
-	private Node searchList(Node node, LinkedList<Node> list){
+	/**
+	 * Lookup a list for containing state 
+	 * @param node
+	 * @param list
+	 * @return
+	 */
+	protected Node searchList(Node node, LinkedList<Node> list){
 		ListIterator<Node> itr = list.listIterator();
 		while(itr.hasNext()){
 			Node next = itr.next();
@@ -203,9 +185,14 @@ public class AStarSearch {
 		return null;
 	}
 	
-	public Node getStartState(String input) {
+	/**
+	 * Generates a state out of a string
+	 * @param input
+	 * @return
+	 */
+	protected Node generateStateFromString(String input) {
 		if(input.charAt(input.length()-1) == '\n'){
-			getStartState(input.substring(0, input.length()-1));
+			generateStateFromString(input.substring(0, input.length()-1));
 		}
 		
 		String[] y = input.split("\n");
@@ -218,6 +205,10 @@ public class AStarSearch {
 		
 	}
 	
+	/**
+	 * Generates goal state according start state
+	 * @return Node
+	 */
 	public Node getGoalState(){
 		int lenght = startState.puzzle.length;
 		String[][] goal = new String[lenght][lenght];
@@ -231,16 +222,15 @@ public class AStarSearch {
 		goal[lenght-1][lenght-1] = "X";
 		return new Node(goal);
 	}
+		
 	
-	public boolean isSolved(Node node){
-		return node.equals(getGoalState());
-	}
-	
-	public int heuristics(Node n){
-		return manhattan(n);
-	}
-	
-	private int manhattan(Node currentNode){
+	/**
+	 * manhattan
+	 * 
+	 * @param currentNode
+	 * @return integer
+	 */
+	private int heuristics(Node currentNode){
 	    return Math.abs(currentNode.xX - goalState.xX) + Math.abs(currentNode.yX - goalState.yX);
 	}
 	
@@ -258,6 +248,10 @@ public class AStarSearch {
 		return true;
 	}
 	
+	/**
+	 * A-star algorithm 
+	 * @return Node | null
+	 */
 	public Node search(){
 		while(!openList.isEmpty()){
 			
@@ -268,12 +262,8 @@ public class AStarSearch {
 			}
 			
 			for(Node successor : currentNode.getSuccessors()){
-				int h = heuristics(successor);
-				successor.costs = currentNode.costs + successor.pathCost + h;
-				
-				successor.parent = currentNode;
-				
-				successor.heuristicCost = h;
+				successor.heuristicCost = heuristics(successor);
+				successor.costs = currentNode.costs + successor.pathCost + successor.heuristicCost;
 				
 				Node findOpen = searchList(successor, openList);
 				Node findClosed = searchList(successor, closedList);

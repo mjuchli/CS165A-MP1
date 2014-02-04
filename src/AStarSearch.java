@@ -45,8 +45,6 @@ public class AStarSearch {
 				leftPuzzle[yX][xX] = leftPuzzle[yX][xX-1];
 				leftPuzzle[yX][xX-1] = "X";
 				Node leftNode = new Node(leftPuzzle, this, "l");
-				int tmpxX = this.xX;
-				//leftNode.xX = --tmpxX;
 				leftNode.findX();
 				successors.add(leftNode);
 			}
@@ -58,8 +56,6 @@ public class AStarSearch {
 				upPuzzle[yX][xX] = upPuzzle[yX-1][xX];
 				upPuzzle[yX-1][xX] = "X";
 				Node upNode = new Node(upPuzzle, this, "u");
-				int tmpyX = this.yX;
-				//upNode.yX = --tmpyX;
 				upNode.findX();
 				successors.add(upNode);
 			}
@@ -71,8 +67,6 @@ public class AStarSearch {
 				rightPuzzle[yX][xX] = new String(rightPuzzle[yX][xX+1]);
 				rightPuzzle[yX][xX+1] = new String("X");
 				Node rightNode = new Node(rightPuzzle, this, "r");
-				int tmpxX = this.xX;
-				//rightNode.xX = ++tmpxX;
 				rightNode.findX();
 				successors.add(rightNode);
 			}
@@ -84,8 +78,6 @@ public class AStarSearch {
 				downPuzzle[yX][xX] = downPuzzle[yX+1][xX];
 				downPuzzle[yX+1][xX] = "X";
 				Node downNode = new Node(downPuzzle, this, "d");
-				int tmpyX = this.yX;
-				//downNode.yX = ++tmpyX;
 				downNode.findX();
 				successors.add(downNode);
 			}
@@ -248,9 +240,8 @@ public class AStarSearch {
 		return manhattan(n);
 	}
 	
-	private int manhattan(Node n){
-		int len = n.puzzle.length-1;
-		return len-n.xX + len-n.yX;
+	private int manhattan(Node currentNode){
+	    return Math.abs(currentNode.xX - goalState.xX) + Math.abs(currentNode.yX - goalState.yX);
 	}
 	
 	public boolean comparePuzzle(String[][] p1, String[][] p2){

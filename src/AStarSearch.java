@@ -1,11 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.PriorityQueue;
 
 public class AStarSearch {
 	
@@ -128,7 +128,14 @@ public class AStarSearch {
 		}
 	}
 	
-	public LinkedList<Node> openList = new LinkedList<>();
+	//public LinkedList<Node> openList = new LinkedList<>();
+	public PriorityQueue<Node> openList = new PriorityQueue<Node>(1000, new Comparator<Node>() {
+		@Override
+		public int compare(Node o1, Node o2) {
+			return o1.costs < o2.costs ? -1 : o1.costs == o2.costs ? 0 : 1;
+		}
+     });  
+	
 	public LinkedList<Node> closedList = new LinkedList<>();
 	public Node goalState;
 	public Node startState;
@@ -176,6 +183,18 @@ public class AStarSearch {
 	 */
 	protected Node searchList(Node node, LinkedList<Node> list){
 		ListIterator<Node> itr = list.listIterator();
+		while(itr.hasNext()){
+			Node next = itr.next();
+			if(comparePuzzle(next.puzzle, node.puzzle)){
+				return next;
+			}
+		}
+		return null;
+	}
+	
+	protected Node searchQueue(Node node, PriorityQueue<Node> list){
+		//ListIterator<Node> itr = list.listIterator();
+		Iterator<Node> itr = list.iterator();
 		while(itr.hasNext()){
 			Node next = itr.next();
 			if(comparePuzzle(next.puzzle, node.puzzle)){
@@ -255,7 +274,8 @@ public class AStarSearch {
 	public Node search(){
 		while(!openList.isEmpty()){
 			
-			Node currentNode = openList.getLast();
+			//Node currentNode = openList.getLast();
+			Node currentNode = openList.poll();
 			
 			if (comparePuzzle(currentNode.puzzle, goalState.puzzle)){
 				return currentNode;
@@ -265,7 +285,8 @@ public class AStarSearch {
 				successor.heuristicCost = heuristics(successor);
 				successor.costs = currentNode.costs + successor.pathCost + successor.heuristicCost;
 				
-				Node findOpen = searchList(successor, openList);
+				//Node findOpen = searchList(successor, openList);
+				Node findOpen = searchQueue(successor, openList);
 				Node findClosed = searchList(successor, closedList);
 				
 				if (findOpen != null && findOpen.compareTo(successor) <= 0) continue;
@@ -278,6 +299,7 @@ public class AStarSearch {
 			}
 			
 			closedList.add(currentNode);
+			//openList.remove(currentNode);
 			
 		}
 		

@@ -13,15 +13,18 @@ public class Node implements Comparable<Node> {
 		public int yX;
 		public String path = "";
 		
-		public Node(String[][] input) {
+		public Node(String[][] input, String path) {
 			this.puzzle = input;
+			this.findX();
 		}
 		
 		public Node(String[][] input, Node parent, String path) {
 			this.puzzle = input;
 			this.parent = parent;
 			this.path = this.parent.path + path;
+			this.findX();
 		}
+
 		
 		/**
 		 * Generates successors out of the current state limited by puzzle possibilities
@@ -37,7 +40,6 @@ public class Node implements Comparable<Node> {
 				leftPuzzle[yX][xX] = leftPuzzle[yX][xX-1];
 				leftPuzzle[yX][xX-1] = "X";
 				Node leftNode = new Node(leftPuzzle, this, "l");
-				leftNode.findX();
 				successors.add(leftNode);
 			}
 			
@@ -48,7 +50,6 @@ public class Node implements Comparable<Node> {
 				upPuzzle[yX][xX] = upPuzzle[yX-1][xX];
 				upPuzzle[yX-1][xX] = "X";
 				Node upNode = new Node(upPuzzle, this, "u");
-				upNode.findX();
 				successors.add(upNode);
 			}
 			
@@ -59,7 +60,6 @@ public class Node implements Comparable<Node> {
 				rightPuzzle[yX][xX] = new String(rightPuzzle[yX][xX+1]);
 				rightPuzzle[yX][xX+1] = new String("X");
 				Node rightNode = new Node(rightPuzzle, this, "r");
-				rightNode.findX();
 				successors.add(rightNode);
 			}
 			
@@ -70,7 +70,6 @@ public class Node implements Comparable<Node> {
 				downPuzzle[yX][xX] = downPuzzle[yX+1][xX];
 				downPuzzle[yX+1][xX] = "X";
 				Node downNode = new Node(downPuzzle, this, "d");
-				downNode.findX();
 				successors.add(downNode);
 			}
 			

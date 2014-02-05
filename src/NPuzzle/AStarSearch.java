@@ -77,7 +77,6 @@ public class AStarSearch extends Search {
 				
 				openList.add(successor);
 			}
-			
 			closedList.add(currentNode);
 		}
 		

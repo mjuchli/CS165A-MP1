@@ -10,10 +10,8 @@ abstract class Search {
 	
 	public Search(String input) throws IOException {
 		String inputFile = readFile(input);
-		startState = generateStateFromString(inputFile);
-		startState.path = "";
-		startState.findX();
-		goalState = getGoalState();
+		startState = new Node(generateStateFromString(inputFile), "");
+		goalState = new Node(getGoalState(startState.puzzle.length), "goal");
 	}
 	
 	/**
@@ -46,37 +44,38 @@ abstract class Search {
 	 * @param input
 	 * @return
 	 */
-	protected Node generateStateFromString(String input) {
+	protected String[][] generateStateFromString(String input) {
 		if(input.charAt(input.length()-1) == '\n'){
 			generateStateFromString(input.substring(0, input.length()-1));
 		}
 		
 		String[] y = input.split("\n");
-		String[][] x = new String[y.length][y.length];
+		String[][] state = new String[y.length][y.length];
 		for(int i = 0; i < y.length; i++){
-			x[i] = y[i].split(" ");
+			state[i] = y[i].split(" ");
 		}
-	    
-	    return new Node(x);
+		
+		return state;
 		
 	}
 	
 	/**
-	 * Generates goal state according start state
-	 * @return Node
+	 * Generates goal state according start state 
+	 * @param lenght
+	 * @return
 	 */
-	public Node getGoalState(){
-		int lenght = startState.puzzle.length;
+	public String[][] getGoalState(int lenght){
 		String[][] goal = new String[lenght][lenght];
 		int tile = 1;
-		for(int i = 0; i < startState.puzzle.length; i++){
-			for(int j = 0; j < startState.puzzle.length; j++){
+		for(int i = 0; i < lenght; i++){
+			for(int j = 0; j < lenght; j++){
 				goal[i][j] = String.valueOf(tile);
 				tile++;
 			}
 		}
 		goal[lenght-1][lenght-1] = "X";
-		return new Node(goal);
+		
+		return goal;
 	}
 	
 	/**

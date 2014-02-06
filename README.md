@@ -1,16 +1,15 @@
 <center><h1>A-star Search</h1></center>
 
-->CS 165A – Artificial Intelligence, Winter 2014 <-
+CS 165A – Artificial Intelligence, Winter 2014
  
-->Machine Problem 1<-
+Machine Problem 1
 
-->by<-
+by
 
-->Marc Juchli / mail@marcjuch.li<-
+Marc Juchli / mail@marcjuch.li
 
-->(February 04, 2014)<-
+(February 04, 2014)
 
-<br><br><br>
 
 <center><h2>General</h2></center>
 

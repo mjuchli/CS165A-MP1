@@ -21,7 +21,6 @@ public class Main {
 				try {
 					String input;
 					input = args[0];
-					//input = "/Users/Marc/Dropbox/School/UCSB/CS165A-MP1/testPuzzle.txt";
 					
 					double startTime = System.currentTimeMillis();
 					
@@ -38,6 +37,7 @@ public class Main {
 					double endTime   = System.currentTimeMillis();
 					double totalTime = endTime - startTime;
 					System.out.println(totalTime/1000+" seconds");
+					writer.println(totalTime/1000+" seconds");
 				} catch (IOException e) {
 					System.out.println("cannot read/write file");
 					//e.printStackTrace();

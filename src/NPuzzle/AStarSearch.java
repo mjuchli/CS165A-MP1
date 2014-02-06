@@ -55,28 +55,30 @@ public class AStarSearch extends Search {
 	 * @throws Exception 
 	 */
 	public Node search() throws Exception{
+		long start = System.currentTimeMillis();
+		long end = start + 30*60*1000; // 30*60 seconds * 1000 ms/sec
+		
 		while(!openList.isEmpty()){
+
+			if (!(System.currentTimeMillis() < end)){
+				throw new Exception("30min are over.");
+			}
 			
 			Node currentNode = openList.poll();
 			
 			if (comparePuzzle(currentNode.puzzle, goalNode.puzzle)) return currentNode;
 			
-			long start = System.currentTimeMillis();
-			long end = start + 60*1000; // 60 seconds * 1000 ms/sec
 			for(Node successor : currentNode.getSuccessors()){
-				
-				if (!(System.currentTimeMillis() < end)){
-					throw new Exception("30min are over.");
-				}
-				
-				successor.heuristicCost = heuristics(successor);
-				successor.costs = currentNode.costs + successor.pathCost + successor.heuristicCost;
 				
 				Node findOpen = searchQueue(successor, openList);
 				Node findClosed = searchQueue(successor, closedList);
 				
 				if (findOpen != null && findOpen.compareTo(successor) <= 0) continue;
 				if (findClosed != null && findClosed.compareTo(successor) <= 0) continue;
+				
+				successor.heuristicCost = heuristics(successor);
+				successor.costs = currentNode.costs + successor.pathCost + successor.heuristicCost;
+				
 				openList.remove(findOpen);
 				closedList.remove(findClosed);
 				

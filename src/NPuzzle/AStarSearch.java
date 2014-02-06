@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class AStarSearch extends Search {
 	
@@ -18,7 +20,7 @@ public class AStarSearch extends Search {
 	
 	public AStarSearch(String input) throws IOException {
 		super(input);
-		openList.add(startState);
+		openList.add(startNode);
 	}
 	
 	/**
@@ -46,23 +48,29 @@ public class AStarSearch extends Search {
 	 * @return integer
 	 */
 	private int heuristics(Node currentNode){
-	    return Math.abs(currentNode.xX - goalState.xX) + Math.abs(currentNode.yX - goalState.yX);
+	    return Math.abs(currentNode.xX - goalNode.xX) + Math.abs(currentNode.yX - goalNode.yX);
 	}
 	
 	/**
 	 * A-star algorithm 
 	 * @return Node | null
+	 * @throws Exception 
 	 */
-	public Node search(){
+	public Node search() throws Exception{
 		while(!openList.isEmpty()){
 			
 			Node currentNode = openList.poll();
 			
-			if (comparePuzzle(currentNode.puzzle, goalState.puzzle)){
-				return currentNode;
-			}
+			if (comparePuzzle(currentNode.puzzle, goalNode.puzzle)) return currentNode;
 			
+			long start = System.currentTimeMillis();
+			long end = start + 60*1000; // 60 seconds * 1000 ms/sec
 			for(Node successor : currentNode.getSuccessors()){
+				
+				if (!(System.currentTimeMillis() < end)){
+					throw new Exception("30min are over.");
+				}
+				
 				successor.heuristicCost = heuristics(successor);
 				successor.costs = currentNode.costs + successor.pathCost + successor.heuristicCost;
 				
@@ -71,7 +79,6 @@ public class AStarSearch extends Search {
 				
 				if (findOpen != null && findOpen.compareTo(successor) <= 0) continue;
 				if (findClosed != null && findClosed.compareTo(successor) <= 0) continue;
-				
 				openList.remove(findOpen);
 				closedList.remove(findClosed);
 				
@@ -83,18 +90,24 @@ public class AStarSearch extends Search {
 		return null;
 	}
 	
+	
 	public static void main(String[] args){
-		
 		try {
 			AStarSearch astar = new AStarSearch("/Users/Marc/Dropbox/School/UCSB/CS165A-MP1/testPuzzle.txt");
 			Node result = astar.search();
-			System.out.println(result.path);
+			if(result == null){
+				System.out.println("cannot be solved");
+			} else {
+				System.out.println(result.path);	
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		} catch (Exception e) {
+			System.out.println(e.toString());
+			//e.printStackTrace();
+		}		
 	}
+	
    
 }

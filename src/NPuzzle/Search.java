@@ -5,13 +5,13 @@ import java.io.IOException;
 
 abstract class Search {
 	
-	public Node goalState;
-	public Node startState;
+	public Node goalNode;
+	public Node startNode;
 	
 	public Search(String input) throws IOException {
 		String inputFile = readFile(input);
-		startState = new Node(generateStateFromString(inputFile), "");
-		goalState = new Node(getGoalState(startState.puzzle.length), "goal");
+		startNode = new Node(generateStateFromString(inputFile), "");
+		goalNode = new Node(getGoalState(startNode.puzzle.length), "goal");
 	}
 	
 	/**

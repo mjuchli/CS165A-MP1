@@ -93,6 +93,8 @@ public class AStarSearch extends Search {
 	
 	public static void main(String[] args){
 		try {
+			double startTime = System.currentTimeMillis();
+			
 			AStarSearch astar = new AStarSearch("/Users/Marc/Dropbox/School/UCSB/CS165A-MP1/testPuzzle.txt");
 			Node result = astar.search();
 			if(result == null){
@@ -100,6 +102,10 @@ public class AStarSearch extends Search {
 			} else {
 				System.out.println(result.path);	
 			}
+			
+			double endTime   = System.currentTimeMillis();
+			double totalTime = endTime - startTime;
+			System.out.println(totalTime/1000+" seconds");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

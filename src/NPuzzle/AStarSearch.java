@@ -3,8 +3,6 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.PriorityQueue;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class AStarSearch extends Search {
 	
@@ -88,31 +86,6 @@ public class AStarSearch extends Search {
 		}
 		
 		return null;
-	}
-	
-	
-	public static void main(String[] args){
-		try {
-			double startTime = System.currentTimeMillis();
-			
-			AStarSearch astar = new AStarSearch("/Users/Marc/Dropbox/School/UCSB/CS165A-MP1/testPuzzle.txt");
-			Node result = astar.search();
-			if(result == null){
-				System.out.println("cannot be solved");
-			} else {
-				System.out.println(result.path);	
-			}
-			
-			double endTime   = System.currentTimeMillis();
-			double totalTime = endTime - startTime;
-			System.out.println(totalTime/1000+" seconds");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			System.out.println(e.toString());
-			//e.printStackTrace();
-		}		
 	}
 	
    
